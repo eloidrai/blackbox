@@ -1,0 +1,12 @@
+table, td {
+    border: 2px solid black;
+    border-collapse: collapse;
+}
+
+td {
+    padding: 10px;
+}
+
+td.gris {
+    background-color: grey;
+}
