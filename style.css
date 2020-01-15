@@ -1,3 +1,7 @@
+body {
+    text-align: center;
+}
+
 table, td {
     font-family: arial;
     font-size: 22px;
@@ -11,6 +15,7 @@ table, td {
 
 table#plateau {
     border-radius: 3px;
+    margin: auto;
 }
 
 td {
