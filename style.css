@@ -1,16 +1,104 @@
 table, td {
-    border: 2px solid black;
+    font-family: arial;
+    font-size: 22px;
+    user-select: none;
+    background-color: black;
+    border: 2px solid;
     border-collapse: collapse;
     text-align: center;
     vertical-align: middle;
 }
 
-td {
-    padding: 10px;
-    width: 15px;
-    height: 15px;
+table#plateau {
+    display: inline-block;
+    border-radius: 3px;
 }
 
-td.gris {
-    background-color: grey;
+td {
+    color: white;
+    padding: 10px;
+    width: 30px;
+    height: 30px;
+}
+
+td.contour {
+    border: none;
+}
+
+td.contour span {
+    padding: 4px;
+    border-radius: 2px;
+}
+
+td:not(.contour) div {
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    display: none;
+    border-radius: 50%;
+    background: red;
+}
+
+td:not(.contour).affiche div {
+    display: block;
+}
+
+td.abs span {
+    border: solid grey 2px;
+    padding: 2px;
+}
+
+td.ref span {
+   background-color: white;
+   color: black;
+}
+
+td.c1 span {
+    background-color: #01CDFE;
+    color: black;
+}
+
+td.c2 span {
+    background-color: #7C00E7;
+    color: black;
+}
+
+td.c3 span {
+    background-color: #FFCC00;
+    color: black;
+}
+
+td.c4 span {
+    background-color: #CC672A;
+    color: black;
+}
+
+td.c5 span {
+    background-color: #1ABC9C;
+    color: black;
+}
+
+td.c6 span {
+    background-color: #852121;
+    color: black;
+}
+
+td.c7 span {
+    background-color: #008000;
+    color: black;
+}
+
+td.c8 span {
+    background-color: #800000;
+    color: black;
+}
+
+td.c9 span {
+    background-color: #FD837B;
+    color: black;
+}
+
+td.c10 span {
+    background-color: #BADA55;
+    color: black;
 }

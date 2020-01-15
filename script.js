@@ -1,9 +1,12 @@
+/*******Partie algo*******/
+
 const VIDE = 0, DEVIE = 1, REFLECHI = 2, ABSORBE = 3, ATOME = 4;
 
 class BlackBox {
     constructor(L, l, nbAtomes){
         this.L = L, this.l = l, this.nbAtomes = nbAtomes;
         this.creerGrille(this.L, this.l);
+        this.nbEssais = 0;
         this.atomesAleatoires(this.nbAtomes);
         console.log("Le jeu peut commencer.");
     }
@@ -27,7 +30,9 @@ class BlackBox {
                 this.tour[c] = new Rayon(L-(c-l-L-l)+1, 0, 0, 1);
             }
         }
-        this.grille[0][0].num = 0, this.grille[l+1][0].num = 0, this.grille[l+1][L+1].num = 0, this.grille[0][L+1].num = 0; // On ne peut pas aller derrière les coins
+        for (const c of [{y:0, x:0}, {y:l+1, x:0}, {y:l+1, x:L+1}, {y:0, x:L+1}]){  // Bords
+            this.grille[c.y][c.x].num = 0;
+        }
     }
     
     atomesAleatoires(nbAtomes){
@@ -50,6 +55,7 @@ class BlackBox {
     }
     
     coup(num){
+        this.nbEssais++;
         let {x, y, deplacementX, deplacementY} = this.tour[num];
         do {
             console.log(x, y);
@@ -75,7 +81,7 @@ class BlackBox {
             }
             x+= deplacementX;
             y+= deplacementY;
-        } while (this.grille[y][x].num === undefined)
+        } while (this.grille[y][x].num === undefined)       // Tant qu'on n'est pas sur un bord
         return this.grille[y][x].num;
     }
 }
@@ -87,28 +93,76 @@ class Rayon {
     }
 }
 
-// Débogage
 
-function afficherGrille(g){
-    let html = "<table>"
-    for (let y in g) {
-        html+="<tr>";
-        for (let x in g[y]){
-            let contenu;
-            if (g[y][x].num !== undefined) {
-                contenu = g[y][x].num;
-            } else if (g[y][x].statut === ATOME){
-                contenu = "x";
-            } else {
-                contenu = "";
+/*******Partie interface*******/
+const plateau = document.getElementById("plateau");
+
+class Interface {
+    constructor(L, l, nbAtomes){
+        this.jeu = new BlackBox(L, l, nbAtomes)
+        plateau.innerHTML = "";
+        this.file = [];                         // File contenant les cases choisies
+        this.tailleFile = nbAtomes;
+        this.n_iemeCouleur = 1;
+        for (let ligne=0; ligne<l+2; ligne++){
+            const r = plateau.insertRow(-1);
+            for (let cellule=0; cellule<L+2; cellule++){
+                const c = r.insertCell(-1);
+                plateau.rows[ligne].cells[cellule].innerHTML = `<div></div>`;
             }
-            html+=`<td class="${(g[y][x].num !== undefined)? "gris": ""}">`+contenu+"</td>";
         }
-        html+="</tr>";
+        for (const c in this.jeu.tour){
+            plateau.rows[this.jeu.tour[c].y].cells[this.jeu.tour[c].x].innerHTML = `<span>${c}</span>`;
+            plateau.rows[this.jeu.tour[c].y].cells[this.jeu.tour[c].x].classList.add("contour");
+        }
+        for (const c of [{y:0, x:0}, {y:l+1, x:0}, {y:l+1, x:L+1}, {y:0, x:L+1}]){
+            plateau.rows[c.y].cells[c.x].classList.add("contour");
+            plateau.rows[c.y].cells[c.x].classList.add("coin");
+        }
+        this.initEvenements();
     }
-    html+= "</table>";
-    document.body.innerHTML = html;
+    
+    clicCaseNumerote(e, num){
+        const resultat = this.jeu.coup(num);
+        if (resultat===0){
+            e.classList.add("abs");
+        } else if (resultat===num) {
+            e.classList.add("ref");
+        } else {
+            const elementResultat = plateau.rows[this.jeu.tour[resultat].y].cells[this.jeu.tour[resultat].x];
+            e.classList.add("c"+this.n_iemeCouleur);
+            elementResultat.classList.add("c"+this.n_iemeCouleur++);
+        }
+    }
+    
+    clicCaseInterieure(e){
+        const ind = this.file.indexOf(e);
+        if (ind===-1){         // Si la case n'est encore choisie
+            e.classList.add("affiche");
+            this.file.push(e);
+            if (this.file.length > this.tailleFile){
+                this.file[0].classList.remove("affiche");
+                this.file.shift();
+            }
+        } else { 
+            this.file[ind].classList.remove("affiche");
+            this.file.splice(ind, 1);
+        }
+    }
+    
+    initEvenements() {
+        document.querySelectorAll("#plateau td:not(.coin)").forEach(element=>{
+            element.addEventListener('click', e=>{
+                const cellule = (e.target.tagName==="TD")? e.target: e.target.parentElement;    // Récupère TOUJOURS l'élément cellule
+                if (cellule.classList.contains("contour")){ // Cases du contour
+                     this.clicCaseNumerote(cellule, parseInt(cellule.children[0].innerHTML));
+                } else {
+                    this.clicCaseInterieure(cellule);
+                }
+            });
+        });
+    }
 }
 
-const bb = new BlackBox(4,4, 2);
-afficherGrille(bb.grille);
+const i = new Interface(8,8,4);
+
