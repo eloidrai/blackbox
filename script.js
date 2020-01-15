@@ -50,7 +50,7 @@ class BlackBox {
                     if (this.grille[y][x].statut === DEVIE) this.grille[y][x].statut = REFLECHI;
                     if (this.grille[y][x].statut === VIDE) this.grille[y][x].statut = DEVIE;
                     // Réfléchi au lieu de dévié car extérieur au plateau
-                    if (this.grille[y][x] === DEVIE && this.grille[y][x].num !== undefined) this.grille[y][x].statut = REFLECHI;
+                    if (this.grille[y][x] !== ABSORBE && this.grille[y][x].num !== undefined) this.grille[y][x].statut = REFLECHI;
                 }
             }
         }
