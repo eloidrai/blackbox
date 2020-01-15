@@ -10,7 +10,6 @@ table, td {
 }
 
 table#plateau {
-    display: inline-block;
     border-radius: 3px;
 }
 

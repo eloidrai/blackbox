@@ -96,6 +96,8 @@ class Rayon {
 
 /*******Partie interface*******/
 const plateau = document.getElementById("plateau");
+const coups = document.querySelector("#coups strong");
+const message = document.getElementById("message");
 
 class Interface {
     constructor(L, l, nbAtomes){
@@ -133,6 +135,15 @@ class Interface {
             e.classList.add("c"+this.n_iemeCouleur);
             elementResultat.classList.add("c"+this.n_iemeCouleur++);
         }
+        coups.innerHTML = this.jeu.nbEssais;
+    }
+    
+    proposer(){
+        let nbCorrectes = 0;
+        for (const e of this.file){
+            if (this.jeu.grille[e.parentElement.rowIndex][e.cellIndex].statut === ATOME) nbCorrectes++;
+        }
+        message.innerHTML = nbCorrectes+" atomes corrects sur "+this.tailleFile;
     }
     
     clicCaseInterieure(e){
@@ -152,17 +163,17 @@ class Interface {
     
     initEvenements() {
         document.querySelectorAll("#plateau td:not(.coin)").forEach(element=>{
-            element.addEventListener('click', e=>{
+            element.onclick = e=>{
                 const cellule = (e.target.tagName==="TD")? e.target: e.target.parentElement;    // Récupère TOUJOURS l'élément cellule
-                if (cellule.classList.contains("contour")){ // Cases du contour
-                     this.clicCaseNumerote(cellule, parseInt(cellule.children[0].innerHTML));
+                if (cellule.classList.contains("contour")){                                     // Cases du contour
+                    this.clicCaseNumerote(cellule, parseInt(cellule.children[0].innerHTML));
                 } else {
                     this.clicCaseInterieure(cellule);
                 }
-            });
+            };
         });
     }
 }
 
 const i = new Interface(8,8,4);
-
+document.getElementsByTagName("button")[0].onclick = e=>i.proposer();
