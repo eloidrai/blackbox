@@ -136,8 +136,11 @@ class Interface {
             const elementResultat = plateau.rows[this.jeu.tour[resultat].y].cells[this.jeu.tour[resultat].x];
             e.classList.add("c"+this.n_iemeCouleur);
             elementResultat.classList.add("c"+this.n_iemeCouleur++);
+            elementResultat.onclick = null;
         }
         coups.innerHTML = this.jeu.nbEssais;
+        e.onclick = null;
+        
     }
     
     proposer(){
@@ -166,7 +169,7 @@ class Interface {
     initEvenements() {
         document.querySelectorAll("#plateau td:not(.coin)").forEach(element=>{
             element.onclick = e=>{
-                const cellule = (e.target.tagName==="TD")? e.target: e.target.parentElement;    // Récupère TOUJOURS l'élément cellule
+                const cellule = e.currentTarget;                                                // Récupère l'élément cellule
                 if (cellule.classList.contains("contour")){                                     // Cases du contour
                     this.clicCaseNumerote(cellule, parseInt(cellule.children[0].innerHTML));
                 } else {
